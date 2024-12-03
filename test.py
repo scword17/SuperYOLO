@@ -66,6 +66,7 @@ def test(data,
         #zjq
         # print(model)
         print(model.yaml_file)
+
         # import thop
         # input_image_size = opt.img_size
         # input_image = torch.randn(1, 3, input_image_size, input_image_size).to(device)

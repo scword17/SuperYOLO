@@ -11,7 +11,7 @@
 
 ## Requirements
 
-```python
+```
 pip install -r requirements.txt
 ```
 
@@ -23,7 +23,7 @@ pip install -r requirements.txt
 
 - 1.2 Download VEDAI data for our experiment from [baiduyun](https://pan.baidu.com/s/1L0SWi5AQA6ZK9jDIWRY7Fg) (code: hvi4) or [google drive](https://drive.google.com/file/d/1Fz0VVlBS924pM3RQvcTsD_qaGjxzIv3y/view?usp=sharing). And the path of dataset is like that
 
-```python
+```
 SuperYOLO
 ├── dataset
 │   ├── VEDAI
@@ -45,48 +45,130 @@ SuperYOLO
 
 ### 2. Begin to train multi images
 <!--
-```python
-python train.py --cfg models/SRyolo_noFocus_small.yaml --super --train_img_size 1024 --hr_input --data data/SRvedai.yaml --ch 4 --input_mode RGB+IR
 ```
-
+python train.py --cfg models/SRyolo_noFocus_small.yaml --super --train_img_size 1024 --hr_input --data data/SRvedai.yaml --ch 4 --input_mode RGB+IR
+---------------------------------结果---------------------------------------
+exp3\weights\best.pt --input_mode RGB+IR
+Model Summary: 267 layers, 7706635 parameters, 0 gradients, 52.1 GFLOPS
+SRyolo_noFocus_small.yaml
+0.6979      0.8323      0.8201      0.5119
+```
 new fusion method MF
 -->
-```python
+
+```
 python train.py --cfg models/SRyolo_MF.yaml --super --train_img_size 1024 --hr_input --data data/SRvedai.yaml --ch 64 --input_mode RGB+IR+MF
+
+---------------------------------结果---------------------------------------
+exp2\weights\best.pt --input_mode RGB+IR+MF
+Model Summary: 277 layers, 7725841 parameters, 0 gradients, 56.0 GFLOPS
+SRyolo_MF.yaml
+val: Scanning 'F:\A-dataset-base\VEDAI-dataset\VEDAI\labels.xcache' for images and labels... 121 found, 0 missing, 2 empty, 0 corrupted: 100%|█████████████████████████████████████| 121/121 [00:00<?, ?it/s]
+               Class      Images      Labels           P           R      mAP@.5  mAP@.5:.95: 100%|████████████████████████████████████████████████████████████████████████| 121/121 [00:06<00:00, 18.70it/s]
+                 all         121         364      0.7542      0.7136      0.7841      0.4869
+
+---------------------------------作者结果---------------------------------------
+small_EDSR_MF_fold1.pt --input_mode RGB+IR+MF
+Model Summary: 291 layers, 7725841 parameters, 0 gradients, 56.0 GFLOPS
+SRyolo_MF.yaml
+val: Scanning 'F:\A-dataset-base\VEDAI-dataset\VEDAI\labels.cache' for images and labels... 121 found, 0 missing, 2 empty, 0 corrupted: 100%|██████████████████████████████████████| 121/121 [00:00<?, ?it/s]
+               Class      Images      Labels           P           R      mAP@.5  mAP@.5:.95: 100%|████████████████████████████████████████████████████████████████████████| 121/121 [00:05<00:00, 20.49it/s]
+                 all         121         364      0.8494      0.6634      0.8132      0.4988
 ```
 
 ### 3. Begin to train RGB or IR images
 
-```python
+```
 python train.py --cfg models/SRyolo_noFocus_small.yaml --super --train_img_size 1024 --hr_input --data data/SRvedai.yaml --ch 3 --input_mode RGB
+
+
+exp6\weights\best.pt --img-size 512 -input_mode RGB
+Model Summary: 267 layers, 7705770 parameters, 0 gradients, 51.7 GFLOPS
+SRyolo_noFocus_small.yaml
+val: Scanning 'F:\A-dataset-base\VEDAI-dataset\VEDAI\labels.xcache' for images and labels... 121 found, 0 missing, 2 empty, 0 corrupted: 100%|█████████████████████████████████████| 121/121 [00:00<?, ?it/s]
+               Class      Images      Labels           P           R      mAP@.5  mAP@.5:.95: 100%|████████████████████████████████████████████████████████████████████████| 121/121 [00:05<00:00, 21.54it/s]
+                 all         121         364      0.7368      0.7233      0.7801      0.4801
 ```
 
-```python
+```
 python train.py --cfg models/SRyolo_noFocus_small.yaml --super --train_img_size 1024 --hr_input --data data/SRvedai.yaml --ch 3 --input_mode IR
 ```
 
+
+---------------------------------前面是有SR辅助分支的的，下面是没有的情况-----------------------------------------
+
 ### 4. Begin to train multi images without SR branch
 <!--
-```python
-python train.py --cfg models/SRyolo_noFocus_small.yaml --train_img_size 512 --data data/SRvedai.yaml --ch 4 --input_mode RGB+IR
 ```
+python train.py --cfg models/SRyolo_noFocus_small.yaml --train_img_size 512 --data data/SRvedai.yaml --ch 4 --input_mode RGB+IR
 
+---------------------------------结果---------------------------------------
+exp4\weights\best.pt --input_mode RGB+IR
+Model Summary: 177 layers, 4825927 parameters, 0 gradients, 52.0 GFLOPS
+SRyolo_noFocus_small.yaml
+0.5689      0.6867      0.6846      0.4089
+```
 new fusion method MF
 -->
-```python
+
+```
 python train.py --cfg models/SRyolo_MF.yaml --train_img_size 512 --data data/SRvedai.yaml --ch 64 --input_mode RGB+IR+MF
+
+exp7\weights\best.pt --img-size 512 ---input_mode RGB+IR+MF
+Model Summary: 187 layers, 4845133 parameters, 0 gradients, 56.0 GFLOPS
+SRyolo_MF.yaml
+val: Scanning 'F:\A-dataset-base\VEDAI-dataset\VEDAI\labels.xcache' for images and labels... 121 found, 0 missing, 2 empty, 0 corrupted: 100%|█████████████████████████████████████| 121/121 [00:00<?, ?it/s]
+               Class      Images      Labels           P           R      mAP@.5  mAP@.5:.95: 100%|████████████████████████████████████████████████████████████████████████| 121/121 [00:07<00:00, 15.89it/s]
+                 all         121         364      0.7779      0.5969       0.692       0.415
 ```
 
 ### 5. Begin to train RGB or IR images without SR branch
 
-```python
+```
 python train.py --cfg models/SRyolo_noFocus_small.yaml --train_img_size 512 --data data/SRvedai.yaml --ch 3 --input_mode RGB
+
+python train.py --cfg models/SRyolo_noFocus_small.yaml --super --train_img_size 512  --data data/server-SRvedai.yaml --ch 3 --batch-size 16 --input_mode RGB 
+
+exp11\weights\best.pt --img-size 512 --input_mode RGB
+Model Summary: 177 layers, 4825639 parameters, 0 gradients, 51.7 GFLOPS
+SRyolo_noFocus_small.yaml
+val: Scanning 'F:\A-dataset-base\VEDAI-dataset\VEDAI\labels.xcache' for images and labels... 121 found, 0 missing, 2 empty, 0 corrupted: 100%|█████████████████████████████████████| 121/121 [00:00<?, ?it/s]
+               Class      Images      Labels           P           R      mAP@.5  mAP@.5:.95: 100%|████████████████████████████████████████████████████████████████████████| 121/121 [00:05<00:00, 21.01it/s]
+                 all         121         364      0.6463      0.5832      0.6365      0.3556
+
+
 ```
 
-```python
+```
 python train.py --cfg models/SRyolo_noFocus_small.yaml --train_img_size 512 --data data/SRvedai.yaml --ch 3 --input_mode IR
 ```
 
+### 其他
+----------------------------测试x1----------------------------------------------------
+yolov5s_RGB_fold1.pt --input_mode RGB
+
+Model Summary: 224 layers, 7072789 parameters, 0 gradients, 16.3 GFLOPS
+yolorss.yaml
+val: Scanning 'F:\A-dataset-base\VEDAI-dataset\VEDAI\labels.xcache' for images and labels... 121 found, 0 missing, 2 empty, 0 corrupted: 100%|█████████████████████████████████████| 121/121 [00:00<?, ?it/s]
+               Class      Images      Labels           P           R      mAP@.5  mAP@.5:.95
+                 all         121         364      0.5273      0.5967      0.5816      0.3289
+
+
+----------------------------测试x2----------------------------------------------------
+yolov5s_multi_fold1.pt --input_mode RGB+IR
+Model Summary: 224 layers, 7073941 parameters, 0 gradients, 16.6 GFLOPS
+yolorss.yaml
+val: Scanning 'F:\A-dataset-base\VEDAI-dataset\VEDAI\labels.xcache' for images and labels... 121 found, 0 missing, 2 empty, 0 corrupted: 100%|█████████████████████████████████████| 121/121 [00:00<?, ?it/s]
+               Class      Images      Labels           P           R      mAP@.5  mAP@.5:.95: 100%|████████████████████████████████████████████████████████████████████████| 121/121 [00:03<00:00, 34.32it/s]
+                 all         121         364      0.7089      0.5106      0.6221      0.3461
+
+----------------------------测试x3----------------------------------------------------
+old-EDSR\small_EDSR_fold1.pt --input_mode RGB+IR 【有SR】
+Model Summary: 267 layers, 7706635 parameters, 0 gradients, 52.0 GFLOPS
+SRyolo_noFocus_small.yaml
+val: Scanning 'F:\A-dataset-base\VEDAI-dataset\VEDAI\labels.xcache' for images and labels... 121 found, 0 missing, 2 empty, 0 corrupted: 100%|█████████████████████████████████████| 121/121 [00:00<?, ?it/s]
+               Class      Images      Labels           P           R      mAP@.5  mAP@.5:.95: 100%|████████████████████████████████████████████████████████████████████████| 121/121 [00:06<00:00, 17.46it/s]
+                 all         121         364      0.7894      0.7594      0.8093      0.5079
 
 ## Test
 
@@ -96,13 +178,13 @@ Download pre-trained model and put it in [here](https://github.com/icey-zhang/Su
 
 ### 2. Begin to test
 <!--
-```python
+```
 python test.py --weights runs/train/exp/best.pt --input_mode RGB+IR 
 ```
 
 new fusion method MF
 -->
-```python
+```
 python test.py --weights runs/train/exp/best.pt --input_mode RGB+IR+MF
 ```
 
@@ -209,4 +291,3 @@ If our code is helpful to you, please cite:
     src="https://api.star-history.com/svg?repos=icey-zhang/SuperYOLO&type=Date"
   />
 </picture>
-

@@ -367,8 +367,13 @@ class LoadStreams:  # multiple IP or RTSP cameras
 
 def img2label_paths(img_paths):
     # Define label paths as a function of image paths
-    sa, sb = os.sep + 'images' + os.sep, os.sep + 'labels' + os.sep  # /images/, /labels/ substrings
-    return [x.replace(sa, sb, 1).replace('_' + x.split('_')[-1], '.txt') for x in img_paths] #replace('.' + x.split('.')[-1], '.txt')
+
+    # sa, sb = os.sep + 'images' + os.sep, os.sep + 'labels' + os.sep  # /images/, /labels/ substrings
+    # return [x.replace(sa, sb, 1).replace('_' + x.split('_')[-1], '.txt') for x in img_paths] #replace('.' + x.split('.')[-1], '.txt')
+
+    return [x.replace('/images/', '/labels/').replace('_' + x.split('_')[-1], '.txt') for x in img_paths]
+
+
 
 def img2ir_paths(img_paths): #zjq
     # Define ir image paths as a function of image paths
@@ -686,7 +691,7 @@ class LoadImagesAndLabels_sr(Dataset):  # for training/testing
         # Check cache
         self.label_files = img2label_paths(self.img_files)  # labels
         self.ir_files = img2ir_paths(self.img_files)
-        cache_path = Path(self.label_files[0]).parent.with_suffix('.cache')  # cached labels
+        cache_path = Path(self.label_files[0]).parent.with_suffix('.xcache')  # cached labels
         if cache_path.is_file():
             cache = torch.load(cache_path)  # load
             if cache['hash'] != get_hash(self.label_files + self.img_files + self.ir_files) or 'results' not in cache:  # changed #zjq

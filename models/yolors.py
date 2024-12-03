@@ -284,7 +284,7 @@ class Model(nn.Module):
                 m.conv = fuse_conv_and_bn(m.conv, m.bn)  # update conv
                 delattr(m, 'bn')  # remove batchnorm
                 m.forward = m.fuseforward  # update forward
-        self.info()
+        self.info(img_size=640)
         return self
 
     def nms(self, mode=True):  # add or remove NMS module

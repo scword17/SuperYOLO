@@ -175,12 +175,14 @@ class Model(nn.Module):
                 steam = torch.cat([steam1,steam2],1)
                 # sio.savemat('features/output.mat', mdict={'data':steam.cpu().numpy()})
             if input_mode == 'RGB+IR':
+                # 经过 torch.cat 后，steam 的形状将是 (N, C1 + 1, H, W)，即将 x 和 ir[:, 0:1, :, :] 沿通道维度拼接。
                 steam = torch.cat([x,ir[:,0:1,:,:]],1)
             if input_mode == 'RGB':
                 steam = x
             if input_mode == 'IR':
                 steam = ir#steam = ir[:,0:1,:,:]
             if input_mode == 'RGB+IR+MF':
+                # 这里并没有进行张量拼接或其他操作，steam 只是一个列表，包含了两个张量：x 和 ir[:, 0:1, :, :]。
                 steam = [x,ir[:,0:1,:,:]] #[:,0:1,:,:]
                 
             
@@ -238,6 +240,7 @@ class Model(nn.Module):
 
 
             self.training |= self.export
+            # self.training = True
             if self.training==True:
                 if self.sr:
                     output_sr = self.model_up(y[self.l1],y[self.l2]) #在超分上加attention    
@@ -276,7 +279,8 @@ class Model(nn.Module):
                 m.conv = fuse_conv_and_bn(m.conv, m.bn)  # update conv
                 delattr(m, 'bn')  # remove batchnorm
                 m.forward = m.fuseforward  # update forward
-        self.info()
+        # self.info()
+        self.info(img_size=640)
         return self
 
     def nms(self, mode=True):  # add or remove NMS module
